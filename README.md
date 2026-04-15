@@ -135,7 +135,10 @@ More complete example with a base policy plus two profiles:
     "planner": {
       "inherits-from": "$base",
       "permission": {
-        "edit": "deny",
+        "edit": {
+          "*": "deny",
+          ".pi/plans/**": "allow"
+        },
         "bash": {
           "*": "ask",
           "ls*": "allow",
@@ -235,6 +238,16 @@ If a bash command is mutating and pi-gate can extract target paths, it also eval
 This lets policies like `"**/*.md": "allow"` apply to both direct file tools and bash-based file mutation.
 
 If a mutating command cannot be analyzed reliably, pi-gate asks instead of silently allowing it.
+
+## Planner handoff file
+
+By convention, Planner writes the definitive saved handoff plan to:
+
+```text
+${cwd}/.pi/plans/active.md
+```
+
+The `planner` gate profile allows edits only in that plan directory, while Builder should treat that file as the source of truth when it exists.
 
 ## Schema validation
 

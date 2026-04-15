@@ -66,7 +66,10 @@
     "planner": {
       "inherits-from": "$base",
       "permission": {
-        "edit": "deny",
+        "edit": {
+          "*": "deny",
+          ".pi/plans/**": "allow"
+        },
         "bash": {
           "*": "ask",
           "cat*": "allow",
@@ -132,6 +135,28 @@
           "fd*": "allow",
           "bat*": "allow",
           "exa*": "allow"
+        }
+      }
+    },
+    "code-reviewer": {
+      "inherits-from": "planner"
+    },
+    "designer": {
+      "inherits-from": "planner",
+      "permission": {
+        "edit": {
+          "*": "deny",
+          "/tmp/**": "allow",
+          "**/*.md": "allow",
+          "**/*.txt": "allow"
+        },
+        "bash": {
+          "*": "ask",
+          "mkdir* /tmp*": "allow",
+          "rm* /tmp*": "allow",
+          "git add*": "deny",
+          "git commit*": "deny",
+          "git push*": "deny"
         }
       }
     }
