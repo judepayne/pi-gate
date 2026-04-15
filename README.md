@@ -46,10 +46,6 @@ Start pi, or if pi is already running, reload:
 - `/gate switch` — picker for available profiles
 - `/gate clear` — clear cached session approvals
 
-Compatibility alias:
-
-- `/control-gate` still works
-
 ## Policy format
 
 `policy.json` is intentionally close to OpenCode.
@@ -98,6 +94,64 @@ Example:
         "edit": {
           "*": "deny",
           "**/*.md": "allow"
+        }
+      }
+    }
+  }
+}
+```
+
+More complete example with a base policy plus two profiles:
+
+```json
+{
+  "$schema": "./policy.schema.json",
+  "activeProfile": "builder",
+  "permission": {
+    "*": "allow",
+    "external_directory": {
+      "*": "ask",
+      "/tmp/**": "allow",
+      "~/.pi/**": "allow"
+    },
+    "read": {
+      "*": "allow",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      "*.env.example": "allow"
+    },
+    "edit": {
+      "*": "allow",
+      "**/.git/**": "deny",
+      "/etc/**": "deny"
+    },
+    "bash": {
+      "*": "allow",
+      "git push*": "ask",
+      "sudo*": "ask"
+    }
+  },
+  "profiles": {
+    "planner": {
+      "inherits-from": "$base",
+      "permission": {
+        "edit": "deny",
+        "bash": {
+          "*": "ask",
+          "ls*": "allow",
+          "cat*": "allow",
+          "grep*": "allow",
+          "git status*": "allow"
+        }
+      }
+    },
+    "docs-writer": {
+      "inherits-from": "$base",
+      "permission": {
+        "edit": {
+          "*": "deny",
+          "**/*.md": "allow",
+          "**/*.mdx": "allow"
         }
       }
     }
@@ -236,11 +290,6 @@ pi.events.emit("gate:switch-profile", {
 
 If pi is idle, the switch happens immediately.
 If a turn is active, the switch is queued until `agent_end`.
-
-Compatibility notes:
-
-- legacy event `control-gate:switch-profile` is still accepted
-- legacy env var `CONTROL_GATE_PROFILE` is still accepted
 
 License: MIT
 

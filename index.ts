@@ -80,9 +80,7 @@ interface Decision {
 
 const SESSION_STATUS_KEY = "gate";
 const GATE_PROFILE_ENV = "GATE_PROFILE";
-const LEGACY_GATE_PROFILE_ENV = "CONTROL_GATE_PROFILE";
 const GATE_SWITCH_PROFILE_EVENT = "gate:switch-profile";
-const LEGACY_GATE_SWITCH_PROFILE_EVENT = "control-gate:switch-profile";
 const POLICY_SCHEMA_FILE = "policy.schema.json";
 const BASE_PROFILE_NAME = "$base";
 const YOLO_STATUS = "gate:yolo";
@@ -951,7 +949,6 @@ export default function piGate(pi: ExtensionAPI) {
 		return (
 			normalizeProfileName(selectedProfileOverride)
 			?? normalizeProfileName(process.env[GATE_PROFILE_ENV])
-			?? normalizeProfileName(process.env[LEGACY_GATE_PROFILE_ENV])
 			?? normalizeProfileName(loaded.policy?.activeProfile)
 			?? BASE_PROFILE_NAME
 		);
@@ -1077,7 +1074,6 @@ export default function piGate(pi: ExtensionAPI) {
 	};
 
 	pi.events.on(GATE_SWITCH_PROFILE_EVENT, handleProfileSwitchEvent);
-	pi.events.on(LEGACY_GATE_SWITCH_PROFILE_EVENT, handleProfileSwitchEvent);
 
 	const commandHandler = async (args: string, ctx: ExtensionContext) => {
 		const trimmed = args.trim();
@@ -1136,10 +1132,6 @@ export default function piGate(pi: ExtensionAPI) {
 
 	pi.registerCommand("gate", {
 		description: "status, switch (switch profiles), clear (clear cached approvals)",
-		handler: commandHandler,
-	});
-	pi.registerCommand("control-gate", {
-		description: "compat alias for /gate",
 		handler: commandHandler,
 	});
 

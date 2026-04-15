@@ -5,8 +5,6 @@
     "*": "allow",
     "external_directory": {
       "*": "ask",
-      "${cwd}": "allow",
-      "${cwd}/**": "allow",
       "/tmp": "allow",
       "/tmp/**": "allow",
       "~/.pi": "allow",
